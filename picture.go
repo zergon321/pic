@@ -80,9 +80,9 @@ func (pic *Picture) SubPicture(rect image.Rectangle) *Picture {
 	return sub
 }
 
-// SubImageRelative creates a new picture based
+// SubPictureRelative creates a new picture based
 // on the given one but without copying the data.
-func (pic *Picture) SubImageRelative(rect image.Rectangle) *Picture {
+func (pic *Picture) SubPictureRelative(rect image.Rectangle) *Picture {
 	sub := &Picture{
 		Rect:     rect,
 		Pix:      pic.Pix,
@@ -92,6 +92,39 @@ func (pic *Picture) SubImageRelative(rect image.Rectangle) *Picture {
 	}
 
 	return sub
+}
+
+// ContainsSubPicture returns the coordinates of the upper-left-most
+// entry of the specified subpicture in the given picture,
+// or (-1; -1) if the given picture doesn't contain the subpicture.
+func (pic *Picture) ContainsSubPicture(other *Picture) (int, int) {
+	found := false
+	atx := -1
+	aty := -1
+
+	for j := 0; j < pic.Rect.Dy()-other.Rect.Dy(); j++ {
+		for i := 0; i < pic.Rect.Dx()-other.Rect.Dx(); i++ {
+			atx = i
+			aty = j
+
+			subimage := pic.SubPictureRelative(image.Rect(
+				i, j, i+other.Rect.Dx(), j+other.Rect.Dy()))
+
+			if subimage.Equals(other) {
+				found = true
+				atx = i
+				aty = j
+
+				break
+			}
+		}
+
+		if found {
+			break
+		}
+	}
+
+	return atx, aty
 }
 
 // CreateImageRGBAFromPicture creates a new

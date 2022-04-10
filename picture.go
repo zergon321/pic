@@ -104,9 +104,6 @@ func (pic *Picture) ContainsSubPicture(other *Picture) (int, int) {
 
 	for j := 0; j < pic.Rect.Dy()-other.Rect.Dy(); j++ {
 		for i := 0; i < pic.Rect.Dx()-other.Rect.Dx(); i++ {
-			atx = i
-			aty = j
-
 			subimage := pic.SubPictureRelative(image.Rect(
 				i, j, i+other.Rect.Dx(), j+other.Rect.Dy()))
 
